@@ -27,9 +27,20 @@ def Add(numbers: str) -> int:
 
     # Sum of all the numbers in input string
     total = 0
+    negatives = []
+
     for part in parts:
-        if part.strip():  # skip empty entries
-            total += int(part.strip())
+        part = part.strip()
+        if part: # skip empty entries
+            num = int(part)
+            if num < 0:
+                negatives.append(num)
+            else:
+                total += num
+
+    # If any negatives found, raise error listing them
+    if negatives:
+        raise ValueError(f"negatives not allowed: {', '.join(map(str, negatives))}")
     return total
 
 # Example usage
@@ -38,6 +49,25 @@ print(Add("1"))             # Output: 1
 print(Add("1,2"))           # Output: 3
 print(Add("1,2,3,4"))       # Output: 10
 print(Add("1\n2,3"))        # Output: 6
-# print(Add("1,2\n"))       # Raises ValueError
+
+try:
+    print(Add("1,2\n"))
+except ValueError as e:
+    print(e)  # Output: negatives not allowed: -2, -4
+
 print(Add("//;\n1;2"))      # Output: 3
-# print(Add("//;\n1;2\n"))  # Raises ValueError
+
+try:
+    print(Add("//;\n1;2\n"))
+except ValueError as e:
+    print(e)  # Output: Input should not end with a newline character
+
+try:
+    print(Add("1,-2,3,-4"))
+except ValueError as e:
+    print(e)  # Output: Input should not end with a newline character
+
+try:
+    print(Add("//;\n1;-2;3;-4"))
+except ValueError as e:
+    print(e)  # Output: negatives not allowed: -2, -4
